@@ -11,9 +11,10 @@ def main():
     """
     Menu po ktorym porusza sie uzytkownik
     """
-    menu =  {
+    menu = {
             "1." : "Sprawdz konfiguracje",
             "2." : "Zmien konfiguracje",
+            #szybka (automatyczna) konfiguracja, wlasna (dokladna) konfiguracja
             "3." : "Zapisz zmiany",
             "4." : "Przywroc konfiguracje poczatkowa",
             "5." : "Zakoncz"
@@ -21,12 +22,12 @@ def main():
     connection = [input("Podaj adres IP routera [x.x.x.x]\n"), input("Podaj maske [x.x.x.x]\n")]
 
     while True:
-        options=menu.keys()
+        options = menu.keys()
         for entry in options:
             print(entry, menu[entry])
 
-        selection=input("Please Select:")
-        if selection =='1':
+        selection = input("Please Select:")
+        if selection == '1':
             print("add")
         elif selection == '2':
             Controller(connection[0], connection[1])

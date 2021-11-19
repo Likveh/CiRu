@@ -7,10 +7,10 @@ class Controller:
     """
     handler zapytan
     """
-    def __init__(self, ip, mask):
-        self.ip = ip
-        self.mask = mask
-        print(self.ip, self.mask)
+    def __init__(self, addrIp, addrMask):
+        self.addrIp = addrIp
+        self.addrMask = addrMask
+        print(self.addrIp, self.addrMask)
 
     def set(self):
         """
