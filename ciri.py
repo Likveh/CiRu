@@ -5,36 +5,45 @@ https://curl.trillworks.com/
 
 """
 from commands.configure import Controller
+from commands.router import Router
+from commands.visuals import *
+from commands.helper import Helper
 
 
 def main():
     """
     Menu po ktorym porusza sie uzytkownik
     """
+
     menu = {
-            "1." : "Sprawdz konfiguracje",
-            "2." : "Zmien konfiguracje",
+            "1" : "Sprawdz konfiguracje",
+            "2" : "Zmien konfiguracje",
             #szybka (automatyczna) konfiguracja, wlasna (dokladna) konfiguracja
-            "3." : "Zapisz zmiany",
-            "4." : "Przywroc konfiguracje poczatkowa",
-            "5." : "Zakoncz"
+            "3" : "Zapisz zmiany",
+            "4" : "Przywroc konfiguracje poczatkowa",
+            "5" : "Pomoc",
+            "6" : "Zakoncz"
             }
-    connection = [input("Podaj adres IP routera [x.x.x.x]\n"), input("Podaj maske [x.x.x.x]\n")]
+
+    connection = [input("Podaj adres IP glownego routera [x.x.x.x]\n"), input("Podaj maske [/xx]\n")]
+    ControlRouter = Controller(connection[0], connection[1])
+    Controller.markRouters(ControlRouter, "192.168.1.0", "192.168.20.0", "/24")
 
     while True:
-        options = menu.keys()
-        for entry in options:
-            print(entry, menu[entry])
+        selection = printMenu(menu)
 
-        selection = input("Please Select:")
         if selection == '1':
-            print("add")
+            pass
         elif selection == '2':
-            Controller(connection[0], connection[1])
+            pass
         elif selection == '3':
-            print("find")
+            pass
         elif selection == '4':
-            break
+            pass
+        elif selection == '5':
+            Helper.enter()
+        elif selection == '6':
+            raise SystemExit
         else:
             print("Podaj prawidlowy parametr")
 
