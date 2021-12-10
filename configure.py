@@ -45,3 +45,13 @@ class Controller:
             self.url, headers=self.headers, auth=(self.device['username'], self.device['password'])
         ).text
         print(json.dumps(json.loads(request), indent=4, sort_keys=True))
+
+    def put(self, module):
+        """
+        wykonujemy zapytanie PUT (edycja)
+        """
+        self.set_module(module)
+        requests.put(
+            self.url, headers=self.headers, auth=(self.device['username'], self.device['password'])
+        )
+        self.get(module)
