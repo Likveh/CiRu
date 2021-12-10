@@ -1,42 +1,48 @@
 """
-importy
-https://blog.networktocode.com/post/Basic-API-use-with-python/
-https://curl.trillworks.com/
 
+https://devnetsandbox.cisco.com/RM/Diagram/Index/7b4d4209-a17c-4bc3-9b38-f15184e53a94?diagramType=Topology
+https://devnetsandbox.cisco.com/RM/Diagram/Index/27d9747a-db48-4565-8d44-df318fce37ad?diagramType=Topology
+
+https://developer.cisco.com/learning/modules/intro-device-level-interfaces/intro-restconf/step/1
+
+https://www.youtube.com/watch?v=qeanMXpcHIk
+https://www.youtube.com/watch?v=XmOBTqDBFyI
+
+https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/prog/configuration/172/b_172_programmability_cg/restconf_protocol.html
+https://developer.cisco.com/learning/modules
 """
-from commands.configure import Controller
 
+import json
+import sys
+import terminal as menu
+#router information etc
+
+with open('settings.json', encoding="UTF-8") as file:
+    settings = json.load(file)
+    devices = settings['configurations']
+    deviceMain = devices[0]
 
 def main():
     """
-    Menu po ktorym porusza sie uzytkownik
+    main fun
     """
-    menu = {
-            "1." : "Sprawdz konfiguracje",
-            "2." : "Zmien konfiguracje",
-            #szybka (automatyczna) konfiguracja, wlasna (dokladna) konfiguracja
-            "3." : "Zapisz zmiany",
-            "4." : "Przywroc konfiguracje poczatkowa",
-            "5." : "Zakoncz"
-            }
-    connection = [input("Podaj adres IP routera [x.x.x.x]\n"), input("Podaj maske [x.x.x.x]\n")]
 
+    #select the router to work on
     while True:
-        options = menu.keys()
-        for entry in options:
-            print(entry, menu[entry])
-
-        selection = input("Please Select:")
-        if selection == '1':
-            print("add")
-        elif selection == '2':
-            Controller(connection[0], connection[1])
-        elif selection == '3':
-            print("find")
-        elif selection == '4':
-            break
-        else:
-            print("Podaj prawidlowy parametr")
+        device_number = 0
+        for device in devices:
+            device_number+=1
+            print(f"{device_number}. {device['host']}")
+        try:
+            selection = input('Wybierz urządzenie lub wpisz [exit] aby wyjsc: ')
+            if selection == 'exit':
+                sys.exit()
+            selection = int(selection)
+            device_selected = devices[selection-1]
+            menu.showmenu(device_selected)
+        except (ValueError, IndexError):
+            print("Something went wrong")
+            continue
 
 
 if __name__=="__main__":
