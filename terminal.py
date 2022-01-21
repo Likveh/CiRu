@@ -31,19 +31,13 @@ def change_hostname(module, router):
             }
     router.put(module, data)
     return
-
-def change_user():
-    """
-    good question
-    """
-
 def change_interfaces(module, router):
     """
     add
     """
     selection = input("What do you want to do? [Add/Remove/Edit]: ")
 
-    #MOREVE INTERFACE
+    #REMOVE INTERFACE
     if selection.lower() == 'remove':
         name = input('Interface name: ')
         module += '/interface='+name
@@ -56,6 +50,7 @@ def change_interfaces(module, router):
         #all data needed for interface
         name = input('Interface name: ')
         description = input("Description: ")
+        interface_type = input("interface type: ") #iana-if-type:softwareLoopback
         enabled = bool(int(input("enable? [1/0]: ")))
         address_ip = input("Ipv4: ")
         address_mask = input("Mask: ")
@@ -63,7 +58,7 @@ def change_interfaces(module, router):
                     "ietf-interfaces:interface": {
                         "name": name,
                         "description": description,
-                        "type": "iana-if-type:softwareLoopback",
+                        "type": interface_type,
                         "enabled": enabled,
                         "ietf-ip:ipv4": {
                             "address": [
@@ -111,19 +106,23 @@ menu_check = {
 menu_change = {
         "1" : ("Banner", "Cisco-IOS-XE-native:native/banner", change_banner),
         "2" : ("Hostname", "Cisco-IOS-XE-native:native/hostname", change_hostname),
-        "3" : ("Users", "Cisco-IOS-XE-native:native/username", change_user),
-        "4" : ("Interfaces", "ietf-interfaces:interfaces", change_interfaces)
+        "3" : ("Interfaces", "ietf-interfaces:interfaces", change_interfaces)
         }
+
+def print_menu(option_menu):
+    """
+    wyswietla menu wyboru
+    """
+    print()
+    for entry in sorted(option_menu.keys()):
+        print(f"{entry}. {option_menu[entry][0]}")
 
 def check_config(router):
     """
     menu do wybrania wyswietlania configu
     """
     while True:
-        print()
-        for entry in sorted(menu_check.keys()):
-            print(f"{entry}. {menu_check[entry][0]}")
-
+        print_menu(menu_check)
         selection = input(
                         f"{len(menu_check)+1}. Go back\nPlease Select: "
                     )
@@ -132,7 +131,10 @@ def check_config(router):
                 return
             router.get(menu_check.get(selection,[None])[1])
         except IndexError:
-            print("Something went wrong")
+            print("The value is incorrect")
+            continue
+        except Exception as err:
+            print(f"An unknown error occured [{type(err).__name__}: {err}]")
             continue
 
 
@@ -142,8 +144,7 @@ def change_config(router):
     """
     while True:
         print()
-        for entry in sorted(menu_change.keys()):
-            print(f"{entry}. {menu_change[entry][0]}")
+        print_menu(menu_change)
 
         selection = input(
                         f"{len(menu_change)+1}. Go back\nPlease Select: "
@@ -158,13 +159,16 @@ def change_config(router):
         except IndexError:
             print("Select a valid router")
             continue
-
+        except Exception as err:
+            print(f"An unknown error occured [{type(err).__name__}: {err}]")
+            continue
 
 #rodzaje po ktorym porusza sie uzytkownik
 menu = {
         "1" : ("Check Config", check_config),
         "2" : ("Change Config", change_config)
         }
+
 
 
 #wyswietla menu urzadzenia
@@ -175,9 +179,7 @@ def showmenu(device):
     print(f"\nSelected device: {device['host']}")
     router = handler.Controller(device)
     while True:
-        print()
-        for entry in sorted(menu.keys()):
-            print(f"{entry}. {menu[entry][0]}")
+        print_menu(menu)
 
         selection = input(
                         f"{len(menu)+1}. Change device\nPlease Select: "
@@ -187,5 +189,8 @@ def showmenu(device):
                 break
             menu.get(selection,[None])[1](router)
         except IndexError:
-            print("Something went wrong")
+            print("The value is incorrect")
+            continue
+        except Exception as err:
+            print(f"An unknown error occured [{type(err).__name__}: {err}]")
             continue

@@ -1,16 +1,7 @@
 """
-Cisco-IOS-XE-native:native
 https://devnetsandbox.cisco.com/RM/Diagram/Index/7b4d4209-a17c-4bc3-9b38-f15184e53a94?diagramType=Topology
 https://devnetsandbox.cisco.com/RM/Diagram/Index/27d9747a-db48-4565-8d44-df318fce37ad?diagramType=Topology
-
 https://developer.cisco.com/learning/modules/intro-device-level-interfaces/intro-restconf/step/1
-
-https://www.youtube.com/watch?v=qeanMXpcHIk
-https://www.youtube.com/watch?v=XmOBTqDBFyI
-https://ultraconfig.com.au/blog/restconf-tutorial-everything-you-need-to-know-about-restconf-in-2020/
-
-https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/prog/configuration/172/b_172_programmability_cg/restconf_protocol.html
-https://developer.cisco.com/learning/modules
 """
 
 import json
@@ -20,9 +11,14 @@ import terminal as menu
 
 
 with open('settings.json', encoding="UTF-8") as file:
-    settings = json.load(file)
-    devices = settings['configurations']
-    deviceMain = devices[0]
+    try:
+        settings = json.load(file)
+        devices = settings['configurations']
+        deviceMain = devices[0]
+    except Exception:
+        print("Failed to load the configuration file! Closing")
+        #exit
+        sys.exit()
 
 def main():
     """
@@ -41,11 +37,10 @@ def main():
                 #add a device
                 new_device  = {
                                 "name": input("Name: "),
-                                "host": input("Host Address: "),
+                                "host ip": input("Host Address: "),
                                 "username": input("Username: "),
                                 "password": input("Password: "),
                                 "restconf_port": input("Restconf_port: "),
-                                "ssh_port": input("ssh_port: "),
                                 "management_interface" : input("management_interface: ")
                             }
 
@@ -75,7 +70,10 @@ def main():
             device_selected = devices[selection-1]
             menu.showmenu(device_selected)
         except (ValueError, IndexError):
-            print("Something went wrong")
+            print("The value is incorrect")
+            continue
+        except Exception as err:
+            print(f"An unknown error occured [{type(err).__name__}: {err}]")
             continue
 
 

@@ -39,42 +39,55 @@ class Controller:
         """
         wykonujemy zapytanie GET
         """
-        self.set_module(module)
-        request = requests.get(
-            self.url, headers=self.headers, auth=(self.device['username'], self.device['password'])
-        ).text
-        print(json.dumps(json.loads(request), indent=4, sort_keys=True))
+        try:
+            self.set_module(module)
+            request = requests.get(
+                self.url, headers=self.headers, auth=(self.device['username'], self.device['password'])
+            ).text
+            #https://sandbox-iosxe-latest-1.cisco.com:443/restconf/data/Cisco-IOS-XE-native:native/version
+            print(json.dumps(json.loads(request), indent=4, sort_keys=True))
+        except Exception:
+            print("\nSomething went wrong")
 
     def post(self, module, packet):
         """
         wykonujemy zapytanie POST (kreacja)
         """
-        self.set_module(module)
-        packet = json.dumps(packet)
-        post = requests.post(
-            self.url, data=packet, headers=self.headers, auth=(self.device['username'], self.device['password'])
-        )
-        print(post.text)
-        print("\nRequest Successful")
+        try:
+            self.set_module(module)
+            packet = json.dumps(packet)
+            post = requests.post(
+                self.url, data=packet, headers=self.headers, auth=(self.device['username'], self.device['password'])
+            )
+            print(post.text)
+            print("\nRequest Successful")
+        except Exception:
+            print("\nSomething went wrong")
 
     def put(self, module, packet):
         """
         wykonujemy zapytanie PUT (edycja)
         """
-        self.set_module(module)
-        packet = json.dumps(packet)
-        post = requests.put(
-            self.url, data=packet, headers=self.headers, auth=(self.device['username'], self.device['password'])
-        )
-        print(post.text)
-        print("\nRequest Successful")
+        try:
+            self.set_module(module)
+            packet = json.dumps(packet)
+            put = requests.put(
+                self.url, data=packet, headers=self.headers, auth=(self.device['username'], self.device['password'])
+            )
+            print(put.text)
+            print("\nRequest Successful")
+        except Exception:
+            print("\nSomething went wrong")
 
     def delete(self, module):
         """
         wykonujemy zapytanie DELETE (edycja)
         """
-        self.set_module(module)
-        requests.delete(
-            self.url, headers=self.headers, auth=(self.device['username'], self.device['password'])
-        )
-        print("\nInterface Removed")
+        try:
+            self.set_module(module)
+            requests.delete(
+                self.url, headers=self.headers, auth=(self.device['username'], self.device['password'])
+            )
+            print("\DELETE Request Successful")
+        except Exception:
+            print("\nSomething went wrong")
